@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>유전자 LAB v10.0 | 표현형 변화 시뮬레이션</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --border-color: #30363d;
+            --text-color: #c9d1d9;
+            --text-bright: #f0f6fc;
+            --accent-blue: #58a6ff;
+            --accent-green: #7ee787;
+            --accent-red: #ff7b72;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background-color: var(--bg-color); color: var(--text-color); padding: 20px; line-height: 1.5; }
+        
+        header { max-width: 1200px; margin: 0 auto 20px auto; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
+        h1 { font-size: 24px; color: var(--text-bright); display: flex; align-items: center; gap: 8px; }
+        .version { font-size: 12px; background: #21262d; padding: 2px 6px; border-radius: 4px; color: #8b949e; }
+        
+        .main-container { display: grid; grid-template-columns: 300px 1fr 350px; gap: 20px; max-width: 1200px; margin: 0 auto; }
+        
+        /* 공통 카드 스타일 */
+        .panel { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; display: flex; flex-direction: column; }
+        .panel-title { font-size: 16px; color: var(--text-bright); margin-bottom: 15px; font-weight: 600; border-bottom: 1px solid #21262d; padding-bottom: 8px; }
+
+        /* 왼쪽: 라이브러리 */
+        .gene-item { background: #21262d; border: 1px solid var(--border-color); padding: 10px; margin-bottom: 8px; border-radius: 6px; cursor: pointer; transition: 0.2s; font-size: 14px; }
+        .gene-item:hover { border-color: var(--accent-blue); background: #262c36; }
+        .gene-category { font-size: 12px; color: #8b949e; margin-top: 10px; margin-bottom: 5px; font-weight: bold; }
+
+        /* 중앙: 실험실 및 시각화 */
+        .slot-container { display: flex; gap: 8px; margin-bottom: 20px; background: #090d13; padding: 10px; border-radius: 6px; min-height: 60px; align-items: center; justify-content: center; }
+        .slot { width: 45px; height: 45px; border: 2px dashed #30363d; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #8b949e; text-align: center; font-weight: bold; }
+        .slot.filled { border-style: solid; border-color: var(--accent-blue); background: #1f2937; color: var(--text-bright); }
+
+        .organism-view { display: flex; gap: 15px; justify-content: center; margin: 20px 0; min-height: 200px; }
+        .display-box { flex: 1; background: #090d13; border: 1px solid var(--border-color); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; position: relative; }
+        .box-label { position: absolute; top: 10px; left: 10px; font-size: 12px; color: #8b949e; background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px; }
+        
+        /* 유동적 생물체 아바타 모형 (CSS 그래픽) */
+        .creature { width: 80px; height: 80px; border-radius: 50%; background: #4f5d75; transition: 0.3s; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff; font-size: 24px; position: relative; }
+        .creature.aura-none { box-shadow: none; }
+        .creature.aura-glow { box-shadow: 0 0 20px #58a6ff; }
+        .creature.aura-spark { box-shadow: 0 0 20px #ff7b72, 0 0 40px #7ee787; }
+        
+        .sequence-text { font-family: monospace; font-size: 13px; color: var(--accent-green); background: #161b22; padding: 4px 8px; border-radius: 4px; margin-top: 5px; max-width: 90%; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
+
+        .btn-group { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: auto; }
+        button { background: #21262d; border: 1px solid var(--border-color); color: var(--text-bright); padding: 10px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; transition: 0.2s; }
+        button:hover { background: #30363d; }
+        button.primary { background: #238636; border-color: #2ea043; }
+        button.primary:hover { background: #2ea043; }
+        button.danger { background: #da3637; border-color: #f85149; }
+        button.danger:hover { background: #f85149; }
+
+        /* 오른쪽: 결과 분석 및 기록 */
+        .analysis-box { background: #090d13; border: 1px solid var(--border-color); padding: 12px; border-radius: 6px; font-size: 13px; min-height: 100px; color: #8b949e; white-space: pre-line; }
+        .stats-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; background: #21262d; padding: 8px; border-radius: 6px; }
+
+        /* 사용안내 모달 */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 100; }
+        .modal-content { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; max-width: 500px; width: 90%; padding: 25px; position: relative; text-align: left; }
+        .close-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; }
+        .modal-content h3 { margin-bottom: 12px; color: var(--text-bright); }
+        .modal-content ul { padding-left: 20px; margin-bottom: 15px; font-size: 14px; color: #8b949e; }
+        .modal-content li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🧬 유전자 LAB <span class="version">v10.0</span></h1>
+        <div>
+            <button onclick="toggleModal(true)">📚 사용 안내</button>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- 1. 왼쪽 유전정보 라이브러리 -->
+        <div class="panel">
+            <div class="panel-title">유전정보 라이브러리</div>
+            
+            <div class="gene-category">■ 색상 코돈 (기본 색 결정)</div>
+            <div class="gene-item" onclick="addGene('색상', 'Red', '#ff4d4d', 'AUG')">🔴 빨강 유전자 (AUG)</div>
+            <div class="gene-item" onclick="addGene('색상', 'Blue', '#4d94ff', 'UUG')">🔵 파랑 유전자 (UUG)</div>
+            <div class="gene-item" onclick="addGene('색상', 'Green', '#4dff4d', 'GUG')">🟢 초록 유전자 (GUG)</div>
+            
+            <div class="gene-category">■ 형태/골격 코돈</div>
+            <div class="gene-item" onclick="addGene('골격', 'Round', '50%', 'AAA')">⚪ 둥근 몸체 (AAA)</div>
+            <div class="gene-item" onclick="addGene('골격', 'Square', '8px', 'CCC')">🔲 각진 몸체 (CCC)</div>
+
+            <div class="gene-category">■ 특수 효과 코돈</div>
+            <div class="gene-item" onclick="addGene('효과', 'Glow', 'aura-glow', 'UUU')">✨ 오라 발광 (UUU)</div>
+            <div class="gene-item" onclick="addGene('효과', 'Spark', 'aura-spark', 'GGG')">🔥 돌연변이 폭발 (GGG)</div>
+        </div>
+
+        <!-- 2. 중앙 실험 공간 및 시각화 -->
+        <div class="panel" style="grid-column: span 1;">
+            <div class="panel-title">유전자형 조합 및 표현형 비교 실험</div>
+            
+            <p style="font-size:13px; color:#8b949e; margin-bottom:8px;">선택된 유전정보 배열 (최대 8개 슬롯)</p>
+            <div class="slot-container" id="slotContainer">
+                <!-- 자바스크립트로 슬롯 생성 -->
+            </div>
+
+            <div class="organism-view">
+                <!-- 기준 표현형 (Before) -->
+                <div class="display-box">
+                    <div class="box-label">기준 표현형 (Before)</div>
+                    <div class="creature aura-none" id="beforeCreature">?</div>
+                    <div class="sequence-text" id="beforeSeq">서열: 대기 중</div>
+                </div>
+                <!-- 현재/돌연변이 표현형 (After) -->
+                <div class="display-box">
+                    <div class="box-label">현재 표현형 (After)</div>
+                    <div class="creature aura-none" id="afterCreature">?</div>
+                    <div class="sequence-text" id="afterSeq">서열: 대기 중</div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button onclick="popGene()">↶ 취소</button>
+                <button class="primary" onclick="expressBase()">✨ 기준 발현</button>
+                <button style="background:#6f42c1; border-color:#6f42c1;" onclick="triggerMutation()">🧬 변이</button>
+                <button class="danger" onclick="resetAll()">초기화</button>
+            </div>
+        </div>
+
+        <!-- 3. 오른쪽 분석창 -->
+        <div class="panel">
+            <div class="panel-title">현재 변이 및 실험 기록</div>
+            
+            <div class="stats-row">
+                <span>선택 정보: <strong id="cntGene" style="color:var(--accent-blue)">0</strong>/8</span>
+                <span>변이 횟수: <strong id="cntMut" style="color:var(--accent-red)">0</strong></span>
+            </div>
+
+            <p style="font-size:13px; color:#8b949e; margin-bottom:8px;">■ 유전자 변이 분석 결과</p>
+            <div class="analysis-box" id="analysisResult">
+                조합을 완성한 뒤 '기준 형질 발현' 및 '변이' 버튼을 눌러 연구를 진행하세요.
+            </div>
+            
+            <p style="font-size:13px; color:#8b949e; margin-top:15px; margin-bottom:8px;">■ 핵심 생명과학 원리 연계</p>
+            <div style="font-size:12px; color:#8b949e; background:#090d13; padding:10px; border-radius:6px; line-height:1.4;">
+                • <strong>유전자형:</strong> 유전정보의 조합<br>
+                • <strong>표현형:</strong> 실제 관찰되는 형태적 특징<br>
+                • <strong>점 돌연변이:</strong> 염기 한두 개가 바뀌어 발생하는 단백질 구조 변형
+            </div>
+        </div>
+    </div>
+
+    <!-- 사용 안내 모달 창 -->
+    <div class="modal" id="guideModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="toggleModal(false)">×</button>
+            <h3>📘 유전자 LAB 사용 안내</h3>
+            <ul>
