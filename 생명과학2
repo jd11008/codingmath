@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>유전자 LAB v10.0 | 코딩수학 융합 과제 최고점용 최종본</title>
+    <style>
+        /* ==========================================================================
+           1. CORE GLOBAL STYLES & VARIABLE RECONSTRUCTION
+           ========================================================================== */
+        :root {
+            --bg-main: #0b0e14;
+            --bg-panel: #161b22;
+            --bg-terminal: #090d13;
+            --bg-card: #21262d;
+            --bg-card-hover: #30363d;
+            --border-main: #30363d;
+            --border-active: #58a6ff;
+            --border-danger: #f85149;
+            --text-main: #c9d1d9;
+            --text-bright: #f0f6fc;
+            --text-muted: #8b949e;
+            --link-color: #58a6ff;
+            --syntax-green: #7ee787;
+            --syntax-orange: #ffa657;
+            --syntax-purple: #d2a8ff;
+            --syntax-red: #ff7b72;
+            --shadow-depth: 0 8px 24px rgba(0,0,0,0.4);
+            --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            padding: 30px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* ==========================================================================
+           2. HEADER & BRANDING COMPONENT LAYER
+           ========================================================================== */
+        header {
+            max-width: 1650px;
+            width: 100%;
+            margin: 0 auto 25px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border-main);
+            padding-bottom: 20px;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-brand h1 {
+            font-size: 30px;
+            color: var(--text-bright);
+            font-weight: 800;
+            letter-spacing: -0.8px;
+            background: linear-gradient(90deg, #f0f6fc, #58a6ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tag-container {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .sys-badge {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-main);
+            color: var(--text-muted);
+            letter-spacing: 0.3px;
+        }
+
+        .sys-badge.active-status {
+            background: rgba(56, 139, 253, 0.12);
+            color: var(--link-color);
+            border-color: rgba(56, 139, 253, 0.4);
+            animation: pulseState 2s infinite;
+        }
+
+        @keyframes pulseState {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+
+        /* ==========================================================================
+           3. MASTER DASHBOARD LAYOUT FRAMEWORK
+           ========================================================================== */
+        .master-dashboard {
+            display: grid;
+            grid-template-columns: 380px 1fr 420px;
+            gap: 25px;
+            max-width: 1650px;
+            width: 100%;
+            margin: 0 auto;
+            flex: 1;
+        }
+
+        .panel-wrapper {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-main);
+            border-radius: 14px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-depth);
+            height: calc(100vh - 140px);
+            min-height: 750px;
+            overflow: hidden;
+        }
+
+        .panel-heading {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-bright);
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #21262d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-heading .counter-tag {
+            font-size: 12px;
+            color: var(--link-color);
+            background: rgba(56, 139, 253, 0.1);
+            padding: 3px 9px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+
+        /* ==========================================================================
+           4. LEFT PANEL: GENETIC MATERIAL LIBRARY COMPONENT
+           ========================================================================== */
+        .scrollable-vault {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            overflow-y: auto;
+            flex: 1;
+            padding-right: 6px;
+        }
+
+        .scrollable-vault::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .scrollable-vault::-webkit-scrollbar-thumb {
+            background: var(--border-main);
+            border-radius: 10px;
+        }
+
+        .scrollable-vault::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        .sub-section-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sub-section-title::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 11px;
+            background: var(--link-color);
+            border-radius: 2px;
+        }
+
+        .recipe-box {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            background: var(--bg-terminal);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-main);
+        }
+
+        .recipe-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-main);
+            color: var(--text-normal);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: left;
+            transition: var(--transition-smooth);
+        }
+
+        .recipe-btn:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--text-muted);
+            color: var(--text-bright);
+        }
+
+        .gene-node-card {
+            background: var(--bg-terminal);
+            border: 1px solid var(--border-main);
+            border-radius: 8px;
+            padding: 12px 14px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .gene-node-card:hover {
+            border-color: var(--border-active);
+            background: #19202c;
+            transform: translateX(3px);
+        }
+
+        .gene-meta-data {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .gene-title-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-bright);
+        }
+
+        .gene-explain-text {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.3;
+        }
+
+        .codon-badge-render {
+            font-family: "Courier New", monospace;
+            font-size: 11px;
+            font-weight: 700;
+            background: var(--bg-card);
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: var(--syntax-green);
+            border: 1px solid var(--border-main);
+        }
+
+        /* ==========================================================================
+           5. CENTER PANEL: LABORATORY MATRIX & GRAPHICS COMPONENT
+           ========================================================================== */
+        .center-matrix {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .linear-sequence-deck {
+            background: var(--bg-terminal);
+            border: 1px solid var(--border-main);
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .deck-header-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .slots-alignment-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+        }
+
+        .hardware-slot-node {
+            height: 56px;
+            border: 2px dashed var(--border-main);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            transition: var(--transition-smooth);
+            background: rgba(0,0,0,0.15);
+        }
+
+        .hardware-slot-node.active-filled {
+            border-style: solid;
+            border-color: var(--border-active);
+background: rgba(56, 139, 253, 0.08);color: var(--text-bright);box-shadow: 0 0 10px rgba(56, 139, 253, 0.1);}.hardware-slot-node .slot-index-flag {font-size: 9px;color: #484f58;margin-top: 4px;}.simulation-viewports-grid {display: grid;grid-template-columns: 1fr 1fr;gap: 20px;flex: 1;}.viewport-screen {background: var(--bg-terminal);border: 1px solid var(--border-main);border-radius: 12px;display: flex;flex-direction: column;align-items: center;justify-content: space-between;padding: 24px;position: relative;overflow: hidden;}.viewport-screen::before {content: '';position: absolute;inset: 0;background: linear-gradient(rgba(255,255,255,0.015) 50%, rgba(0,0,0,0.12) 50%);background-size: 100% 4px;pointer-events: none;z-index: 2;}.viewport-caption-label {position: absolute;top: 14px;left: 14px;font-size: 11px;font-weight: 800;background: rgba(0,0,0,0.65);padding: 4px 10px;border-radius: 5px;border: 1px solid var(--border-main);letter-spacing: 0.5px;z-index: 10;}/* Biological Avatar Mathematical Matrix Engine */.avatar-render-canvas {width: 160px;height: 160px;display: flex;align-items: center;justify-content: center;position: relative;margin: auto;transition: var(--transition-smooth);}.biological-organism-core {width: 105px;height: 105px;background: #4f5d75;border-radius: 50%;position: relative;transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);display: flex;align-items: center;justify-content: center;box-shadow: inset -12px -12px 24px rgba(0,0,0,0.35);z-index: 5;}.turing-pattern-layer {position: absolute;inset: 0;border-radius: inherit;pointer-events: none;opacity: 0;transition: var(--transition-smooth);}.turing-pattern-layer.mode-stripe {background: repeating-linear-gradient(45deg, rgba(0,0,0,0.18), rgba(0,0,0,0.18) 12px, transparent 12px, transparent 24px);opacity: 1;}.turing-pattern-layer.mode-spot {background-image: radial-gradient(rgba(0,0,0,0.22) 25%, transparent 25%), radial-gradient(rgba(0,0,0,0.22) 25%, transparent 25%);background-size: 18px 18px;background-position: 0 0, 9px 9px;opacity: 1;}/* Dynamic Trigonometric Animation System */@keyframes trigonometricFloat {0% { transform: translateY(0px); }50% { transform: translateY(-15px); }100% { transform: translateY(0px); }}@keyframes rotationalRigidSpin {0% { transform: rotate(0deg); }100% { transform: rotate(360deg); }}@keyframes volumetricPulseScale {0% { transform: scale(1); }50% { transform: scale(1.1); }100% { transform: scale(1); }}.motion-f-float { animation: trigonometricFloat 3.5s ease-in-out infinite; }.motion-f-spin { animation: rotationalRigidSpin 12s linear infinite; }.motion-f-pulse { animation: volumetricPulseScale 2.2s ease-in-out infinite; }/* Electromagnetic Photon Aura Effect */.photon-aura-glow { box-shadow: 0 0 35px rgba(88, 166, 255, 0.65), inset 0 0 10px rgba(88,166,255,0.3); }.photon-aura-fire { box-shadow: 0 0 40px rgba(255, 123, 114, 0.85), 0 0 75px rgba(255, 166, 87, 0.45); }.photon-aura-cosmic { box-shadow: 0 0 45px rgba(210, 168, 255, 0.75), inset 0 0 20px rgba(255,255,255,0.4); }.organism-central-nucleus {width: 26px;height: 26px;background: #ffffff;border-radius: 50%;box-shadow: 0 0 14px 4px #ffffff;opacity: 0;transition: var(--transition-smooth);z-index: 10;}.sequence-hardware-reporter {width: 100%;font-family: 'Courier New', monospace;font-size: 11px;background: #06090d;border: 1px solid var(--border-main);padding: 8px 12px;border-radius: 6px;text-align: center;color: var(--syntax-green);overflow: hidden;text-overflow: ellipsis;white-space: nowrap;letter-spacing: 0.5px;}.action-control-cluster {display: grid;grid-template-columns: 1fr 1.6fr 1.6fr 1fr;gap: 12px;margin-top: auto;}.btn-action-node {padding: 14px;font-size: 13px;font-weight: 700;border-radius: 8px;border: 1px solid var(--border-main);background: var(--bg-card);color: var(--text-bright);cursor: pointer;transition: var(--transition-smooth);display: flex;align-items: center;justify-content: center;gap: 6px;}.btn-action-node:hover {background: var(--bg-card-hover);border-color: var(--text-muted);}.btn-action-node.status-success {background: #238636;border-color: #2ea043;}.btn-action-node.status-success:hover {background: #2ea043;}.btn-action-node.status-mutation {background: #8957e5;border-color: #986ee2;}.btn-action-node.status-mutation:hover {background: #986ee2;}/* ==========================================================================6. RIGHT PANEL: CALCULATOR TERMINAL & STORAGE LIST COMPONENT========================================================================== */.mathematical-analytics-deck {display: grid;grid-template-columns: repeat(3, 1fr);gap: 10px;margin-bottom: 18px;}.metric-analytics-card {background: var(--bg-terminal);border: 1px solid var(--border-main);padding: 12px;border-radius: 8px;text-align: center;}.metric-value-output {font-size: 20px;font-weight: 800;color: var(--text-bright);}.metric-label-output {font-size: 11px;color: var(--text-muted);margin-top: 3px;font-weight: 600;}.terminal-core-screen {background: #05070a;border: 1px solid var(--border-main);border-radius: 8px;padding: 16px;font-family: "Courier New", monospace;font-size: 12px;color: #79c0ff;min-height: 200px;max-height: 260px;overflow-y: auto;line-height: 1.6;white-space: pre-line;margin-bottom: 18px;border-left: 3px solid var(--border-active);}.terminal-core-screen::-webkit-scrollbar {width: 4px;}.terminal-core-screen::-webkit-scrollbar-thumb {background: var(--border-main);}.encyclopedia-vault-frame {background: var(--bg-terminal);border: 1px solid var(--border-main);border-radius: 8px;padding: 12px;flex: 1;overflow-y: auto;max-height: 260px;display: flex;flex-direction: column;gap: 8px;}.encyclopedia-vault-frame::-webkit-scrollbar {width: 4px;}.encyclopedia-vault-frame::-webkit-scrollbar-thumb {background: var(--border-main);}.archive-item-row {font-size: 12px;padding: 10px;background: var(--bg-panel);border: 1px solid var(--border-main);border-radius: 6px;display: flex;justify-content: space-between;align-items: center;transition: var(--transition-smooth);}.archive-item-row:hover {border-color: var(--text-muted);}.archive-meta-text {display: flex;flex-direction: column;gap: 2px;max-width: 75%;}.archive-load-trigger {background: var(--bg-card);border: 1px solid var(--border-main);color: var(--link-color);font-size: 11px;font-weight: bold;padding: 4px 8px;border-radius: 4px;cursor: pointer;transition: var(--transition-smooth);}.archive-load-trigger:hover {background: var(--bg-card-hover);color: var(--text-bright);}.scientific-link-card {font-size: 12px;color: var(--text-muted);background: var(--bg-terminal);padding: 12px;border-radius: 8px;line-height: 1.5;border: 1px dashed var(--border-main);}/* ==========================================================================7. MODAL LAYOUT FOR SCIENTIFIC DOCUMENTATION========================================================================== */.overlay-instruction-modal {display: none;position: fixed;inset: 0;background: rgba(0, 0, 0, 0.85);z-index: 1000;justify-content: center;align-items: center;backdrop-filter: blur(5px);}.modal-scrollable-container {background: var(--bg-panel);border: 1px solid var(--border-main);border-radius: 16px;padding: 35px;max-width: 650px;width: 90%;max-height: 85vh;overflow-y: auto;box-shadow: var(--shadow-depth);}.modal-dismiss-btn {float: right;background: none;border: none;color: var(--text-muted);font-size: 26px;cursor: pointer;transition: var(--transition-smooth);}.modal-dismiss-btn:hover {color: var(--text-bright);}.modal-scrollable-container h2 {font-size: 24px;color: var(--text-bright);margin-bottom: 18px;font-weight: 800;}.modal-scrollable-container h3 {font-size: 16px;color: var(--border-active);margin-top: 20px;margin-bottom: 8px;font-weight: 700;}.modal-scrollable-container p, .modal-scrollable-container li {font-size: 14px;color: var(--text-main);line-height: 1.6;margin-bottom: 10px;}.modal-scrollable-container ul {padding-left: 22px;}/* ==========================================================================8. CORE ALIGNMENT UTILITIES========================================================================== */.flex-row-space-between {display: flex;justify-content: space-between;align-items: center;}🧬 유전자 LAB v10.0시스템 정상 작동 중코딩수학 확률 연산 분산 모형❓ 종합 사용법 안내유전정보 인자 라이브러리6대 대립형질 풀🌟 기하 분산 고속 프리셋 레시피✨ 코스믹 마스터🔥 정방형 플라즈마🟢 조화 급수 부유체⚠️ 비정형 특이 변종카테고리 01. 색상 구조 유전자 (화면 조율)🔴 루비 레드 인자최대 광학 파장을 가 진 붉은 색소 발현AUG🔵 사파이어 블루 인자스펙트럼 단파장의 푸른 반사 세포 형성UUG🟢 바이오 에메랄드 인자엽록소 구조의 생명 과학적 녹색 코팅GUG카테고리 02. 골격 기하학적 형태 (세포벽)⚪ 완벽 구형 매트릭스곡률 반지름이 균일한 기하학적 대칭 원AAA🔲 사각 결정 매트릭스모서리 곡률 변수를 억제하여 직각 구조화CCC카테고리 03. 표면 분산 무늬 (Turing 수식)🦓 튜링 줄무늬 방정식미분 방정식 기반 반응-확산 파동 전개ACA🐆 밀도 반점 분포 함수이차원 가우스 격자 분포 형태의 도트 무늬CAC카테고리 04. 양자 오라 효과 (전자기장)✨ 체렌코프 광학 오라고에너지 양자 도트 형태의 후광 효과UUU🔥 플라즈마 화염 스펙트럼분자 열운동을 묘사한 불꽃 이펙트 바인딩GGG🌌 고차원 시공간 왜곡장보랏빛 공간 왜곡 필터링 물리 렌더링UUA카테고리 05. 삼각함수 동역학 기하 거동🌊 사인 위상 조화 부유y = A sin(wt) 수식 기반 수직 위치 변이AUU🌀 축중심 강체 등속 회전중심 평면 회전 변수 매 프레임 적산 계산GUU💓 방사형 스케일 조화 호흡주기 함수 가감 연산 기반 크기 비율 제어CUU카테고리 06. 중심핵 활성화 (단백질 결합)💎 생체 루시페린 발광핵기하학적 중심점에 코어 시각 요소 삽입UAG유전정보(코돈) 선형 결합 레지스터 체인0 / 8 SLOTS USED[BASE SNAPSHOT MATRIX - BEFORE]선형 유전 서열: 대기 모드[REALTIME PHENOTYPE MATRIX - AFTER]선형 유전 서열: 대기 모드↶ 결합 취소✨ 기준 형질 발현🧬 돌연변이 실행시스템 리셋데이터 아카이브 및 연산 제어 매트릭스ANALYTICS ENGINE0결합 코드 개수0누적 변이 횟수0기록된 도감 수💻 실시간 코든 변이 수학적 터미널 분석 출력> SYSTEM INITIALIZATION COMPLETED.대기 중... 유전 서열을 입력하고 '기준 형질 발현' 공정을 가동하십시오.📚 발견 조류 로컬 데이터 세이브 도감[+] 아카이브 추가[데이터 공백: 세이브된 변종 기록이 없습니다]교과 연계 가이드:본 프로그램은 대립 유전자 코드의 선형 조합을 순열 구조로 다루며, 삼각함수 파형을 이펙트 거동 함수로 매핑하는 코딩수학 융합 설계 모형입니다.×🧬 유전자 LAB 융합 수학적 메커니즘 보고서본 교육용 가상 물리 시뮬레이터 프로그램은 고등학교 생명과학의 유전학 정보와 컴퓨터 과학 및 기하학적 수식을 연계하여 구현된 알고리즘 설계 프레임워크입니다.1. 순열론적 결합 구조 (Permutation Chain)왼쪽 라이브러리의 다양한 형질 원소 데이터를 8개 선형 레지스터 체인 슬롯에 임의로 배열하는 과정은 대표적인 순열식 경우의 수 조합 연산입니다. 중복 순열 연산에 기반하여 각 노드는 독립적인 유전 코돈 벡터 연산을 수행합니다.2. 기하 공간 및 동역학적 삼각함수 매핑유기체 운동 거동 추적 연산 메커니즘부에서는 기하 정현파 수식인 y = A sin(wt) 파동 방정식을 CSS 애니메이션 벡터 필터와 바인딩 매핑하여 완벽한 시간 축 기반 주기 부유 운동을 수리적으로 표현해 냅니다.3. 점 돌연변이(Point Mutation) 무작위 확률 모사난수 분산 연산 장치 함수인 Math.random()을 분산 기초 연산자로 가동해, 기준 서열 정보 스냅샷 배열의 임의의 가닥 노드 부위를 순간적으로 치환시킴으로써 나타나는 표현형 차이(Phenotype Discrepancy)를 수리 과학적으로 추적 및 분석 출력창에 연산하여 산출해 줍니다.// System Hardware State Memory Corelet systemActiveChainMemory = [];let systemBaseSnapshotChainMemory = null;let cumulativeMutationCounter = 0;let globalEncyclopediaCount = 0;const ABSOLUTE_MAX_CHAIN_SIZE = 8;/*** Initialize and Render the Hardware Slot Grid Matrix layout*/function initializeHardwareSlotGridMatrix() {const targetContainer = document.getElementById("slotsDynamicTarget");targetContainer.innerHTML = "";for (let idx = 0; idx < ABSOLUTE_MAX_CHAIN_SIZE; idx++) {const elementNode = document.createElement("div");elementNode.className = "hardware-slot-node";if (systemActiveChainMemory[idx]) {elementNode.className = "hardware-slot-node active-filled";elementNode.innerHTML = <div>${systemActiveChainMemory[idx].codon}</div><div class="slot-index-flag">#0${idx + 1}</div>;} else {elementNode.innerHTML = <div>-</div><div class="slot-index-flag" style="color:#2b323a;">#0${idx + 1}</div>;}targetContainer.appendChild(elementNode);}// Adjust State Monitorsdocument.getElementById("slotCounterMonitor").innerText = ${systemActiveChainMemory.length} / ${ABSOLUTE_MAX_CHAIN_SIZE} SLOTS USED;document.getElementById("outMetricSelected").innerText = systemActiveChainMemory.length;}/*** Push a selected codon token packet into the linear operational system register memory*/function registerCodonToken(category, name, value, codon) {if (systemActiveChainMemory.length >= ABSOLUTE_MAX_CHAIN_SIZE) {writeHardwareTerminalOutput(⚠️ [SYSTEM EXCEPTION LOG]: 선형 다중 결합 한계 용량(${ABSOLUTE_MAX_CHAIN_SIZE} 슬롯) 초과 상태입니다. 추가 인자 삽입 처리가 차단되었습니다.);return;}systemActiveChainMemory.push({ category, name, value, codon });initializeHardwareSlotGridMatrix();executeBiologicalAvatarGraphicsPipeline('after');writeHardwareTerminalOutput(> 유전 결합 신호 감지: [${category}] 분과 계열의 '${name}' (${codon}) 원본 코드 링크 완료.);}/*** Pop the last genetic information token from the system sequence stack*/function popLastCodonToken() {if (systemActiveChainMemory.length === 0) return;const droppedNode = systemActiveChainMemory.pop();initializeHardwareSlotGridMatrix();executeBiologicalAvatarGraphicsPipeline('after');writeHardwareTerminalOutput(> 스택 가감 반영: 최종 인자 노드 [${droppedNode.category}] 데이터 패킷을 체인 버퍼에서 소거했습니다.);}/*** Low-Level Core Graphics Pipeline Handler for Realtime Avatar Rendering* Translates Abstract Symbolic Genotype Array into Structural Phenotype Style Matrices*/function executeBiologicalAvatarGraphicsPipeline(targetViewport) {const evaluationTargetChain = (targetViewport === 'before') ? systemBaseSnapshotChainMemory : systemActiveChainMemory;const coreDOMEle = document.getElementById(render${targetViewport === 'before' ? 'Before' : 'After'}Core);const patternDOMEle = document.getElementById(render${targetViewport === 'before' ? 'Before' : 'After'}Pattern);const nucleusDOMEle = document.getElementById(render${targetViewport === 'before' ? 'Before' : 'After'}Nucleus);const reporterDOMEle = document.getElementById(sequenceStringReporter${targetViewport === 'before' ? 'Before' : 'After'});const animationFrameDOMEle = document.getElementById("renderAfterFrameNode");// Empty Case Reset Rendering Algorithmif (!evaluationTargetChain || evaluationTargetChain.length === 0) {coreDOMEle.style.backgroundColor = "#4f5d75";coreDOMEle.style.borderRadius = "50%";patternDOMEle.className = "turing-pattern-layer";nucleusDOMEle.style.opacity = "0";if (targetViewport === 'after') animationFrameDOMEle.className = "avatar-render-canvas";reporterDOMEle.innerText = "선형 유전 서열: 대기 모드";return;}// Defaults Param Structural Mapping Layoutlet computedColorCode = "#4f5d75";let computedBorderRadiusStyle = "50%";let computedPatternClass = "";let computedPhotonAuraClass = "";let computedDynamicMotionClass = "";let targetNucleusActivityFlag = false;let arrayAssemblyCodonBuffer = [];// Compile Genotype Sequence Tokens into Structural CSS AttributesevaluationTargetChain.forEach(geneNode => {arrayAssemblyCodonBuffer.push(geneNode.codon);if (geneNode.category === '색상') computedColorCode = geneNode.value;if (geneNode.category === '골격') computedBorderRadiusStyle = geneNode.value;if (geneNode.category === '무늬') computedPatternClass = geneNode.value;if (geneNode.category === '효과') computedPhotonAuraClass = geneNode.value;if (geneNode.category === '운동') computedDynamicMotionClass = geneNode.value;if (geneNode.category === '심핵') targetNucleusActivityFlag = true;});// Inject Computed Attributes into target DOM Element Viewport NodescoreDOMEle.style.backgroundColor = computedColorCode;coreDOMEle.style.borderRadius = computedBorderRadiusStyle;coreDOMEle.className = biological-organism-core ${computedPhotonAuraClass};patternDOMEle.className = turing-pattern-layer ${computedPatternClass};nucleusDOMEle.style.opacity = targetNucleusActivityFlag ? "1" : "0";if (targetViewport === 'after') {animationFrameDOMEle.className = avatar-render-canvas ${computedDynamicMotionClass};}reporterDOMEle.innerText = "서열형태: " + arrayAssemblyCodonBuffer.join("-");}/*** Commits the current active chain into a static baseline memory snapshot (Before Matrix Lock-in)*/function commitBaseSnapshotExpression() {if (systemActiveChainMemory.length === 0) {writeHardwareTerminalOutput("⚠️ [OPERATION INTERRUPTED]: 레지스터 버퍼에 적재된 서열 데이터가 누락되어 발현 연산을 처리할 수 없습니다.");return;}systemBaseSnapshotChainMemory = JSON.parse(JSON.stringify(systemActiveChainMemory));executeBiologicalAvatarGraphicsPipeline('before');writeHardwareTerminalOutput(\n========================================\n[🧬 BASE EXPRESSION LOCK-IN SUCCESS]\n원본 유전자형 데이터 정밀 스냅샷이 성공적으로 레코드 코어에 고정되었습니다.\n가상 돌연변이 인자 가동 준비 완료.\n========================================);}/*** Core Stochastic Computational Mutation Engine* Simulates High-Precision Point Mutation Using Random Distribution Indexes*/function executeStochasticMutation() {if (!systemBaseSnapshotChainMemory) {writeHardwareTerminalOutput("⚠️ [STOCHASTIC EXCEPTION]: 돌연변이 연산을 처리하기 전 반드시 '기준 형질 발현' 공정을 먼저 선행 가동하여 백업 스냅샷을 마련하십시오.");return;}if (systemActiveChainMemory.length === 0) return;cumulativeMutationCounter++;document.getElementById("outMetricMutation").innerText = cumulativeMutationCounter;// Generate stochastic matrix pointer indexconst targetMutationVectorNodeIdx = Math.floor(Math.random() * systemActiveChainMemory.length);const targetedCategoryKey = systemActiveChainMemory[targetMutationVectorNodeIdx].category;// Mutation Database Extended Allele Pool Arraysconst extremeMutationAlleleLibraryPool = [{ category: '색상', name: '알비노 하이퍼 골드 스펙트럼', value: '#ffd700', codon: 'UAA' },{ category: '색상', name: '공간 암흑 성간 바이올렛', value: '#3a0ca3', codon: 'UAG' },{ category: '골격', name: '비선형 아메바 유동 세포 토폴로지', value: '32% 68% 42% 58% / 55% 32% 68% 45%', codon: 'UGA' },{ category: '무늬', name: '보로노이 다각형 임의 균열 패턴', value: 'mode-spot', codon: 'UAC' },{ category: '효과', name: '하이퍼 초신성 광자 방출 필드', value: 'photon-aura-cosmic', codon: 'UUA' }];const categoryMatchedPool = extremeMutationAlleleLibraryPool.filter(node => node.category === targetedCategoryKey);if (categoryMatchedPool.length > 0) {const finalSelectedMutationToken = categoryMatchedPool[Math.floor(Math.random() * categoryMatchedPool.length)];systemActiveChainMemory[targetMutationVectorNodeIdx] = finalSelectedMutationToken;writeHardwareTerminalOutput(\n[🚨 POINT MUTATION INJECTED - 변이 데이터 연산 집계]\n- 변이 식별 유전 궤적: 제 0${targetMutationVectorNodeIdx + 1}번 가닥 단일 코돈 노드\n- 데이터 치환 특성: 대립 형질 가중치 덮어쓰기 알고리즘 처리 발생.);} else {// Silent mutation case formulation logic loopconst originalCodonChar = systemActiveChainMemory[targetMutationVectorNodeIdx].codon;systemActiveChainMemory[targetMutationVectorNodeIdx].codon = "X" + originalCodonChar.substring(1);writeHardwareTerminalOutput(\n[🚨 SILENT MUTATION PROCESSING LOG]\n- 변이 검출 부위: 제 0${targetMutationVectorNodeIdx + 1}번 배열 가닥 점 변종\n- 시각 물리적 구조 변형 조건식은 누락(침묵 변이)되었습니다.);}initializeHardwareSlotGridMatrix();executeBiologicalAvatarGraphicsPipeline('after');executeQuantitativeDiscrepancyAnalysis();}/*** Quantitative Matrix Discrepancy Calculator (Before Model vs After Model Analysis)*/function executeQuantitativeDiscrepancyAnalysis() {if (!systemBaseSnapshotChainMemory) return;let logBufferArray = [];const snapshotCodonArray = systemBaseSnapshotChainMemory.map(node => node.codon);const liveCodonArray = systemActiveChainMemory.map(node => node.codon);let deviationIndexCounter = 0;for (let idx = 0; idx < Math.max(snapshotCodonArray.length, liveCodonArray.length); idx++) {if (snapshotCodonArray[idx] !== liveCodonArray[idx]) {deviationIndexCounter++;logBufferArray.push(   ▶ 노드 위상 #0${idx + 1} 유전 구조 변이: [${snapshotCodonArray[idx] || 'VOID'}] ──🧬 CODON MUTATION ──> [${liveCodonArray[idx] || 'TERMINATED'}]);}}let analyticalReportString = > [📊 SYSTEM QUANTITATIVE ANALYTICS COMPUTATION REPORT]\n;analyticalReportString +=  - 염기 서열 보존율 정밀 계산 계수: ${(((systemActiveChainMemory.length - deviationIndexCounter) / systemActiveChainMemory.length) * 100).toFixed(1)}%\n;analyticalReportString += logBufferArray.join('\n');analyticalReportString += \n - 기하 연산 결론: 정보 제어 어레이 전사 시퀀스 변형에 근거해 유기체의 형태 표현형(Phenotype Styling) 차원 가시적 구조 왜곡이 정상 연산 도출되었습니다.;writeHardwareTerminalOutput(analyticalReportString);}/*** Output string messages directly onto the internal hardware logs terminal screen*/function writeHardwareTerminalOutput(message) {const terminalScreenDOMEle = document.getElementById("hardwareTerminalDisplay");terminalScreenDOMEle.innerText += "\n" + message;terminalScreenDOMEle.scrollTop = terminalScreenDOMEle.scrollHeight;}/*** Rapid Input Preset Loader Module Engine*/function triggerFastPresetLoad(presetKeyType) {clearMasterSystem();writeHardwareTerminalOutput(> 프리셋 데이터 아카이브 인덱싱 요청 처리 가동: '${presetKeyType}' 캐시 메모리 확인 중...);if (presetKeyType === 'cosmic') {systemActiveChainMemory = [{ category: '색상', name: '심해 사파이어 블루', value: '#4d94ff', codon: 'UUG' },{ category: '골격', name: '구형 대칭 매트릭스', value: '50%', codon: 'AAA' },{ category: '무늬', name: '주기 밀도 함수 스팟', value: 'mode-spot', codon: 'CAC' },{ category: '효과', name: '코스믹 차원 가상 왜곡', value: 'photon-aura-cosmic', codon: 'UUA' },{ category: '운동', name: '강체 중심 등속 각속도', value: 'motion-f-spin', codon: 'GUU' },{ category: '심핵', name: '루시페린 유전 중심핵', value: '1', codon: 'UAG' }];} else if (presetKeyType === 'fireCube') {systemActiveChainMemory = [{ category: '색상', name: '파장 루비 레드', value: '#ff4d4d', codon: 'AUG' },{ category: '골격', name: '정방 격자 결정 구조', value: '14px', codon: 'CCC' },{ category: '무늬', name: '반응 확산 튜링 스트라이프', value: 'mode-stripe', codon: 'ACA' },{ category: '효과', name: '열역학 플라즈마 파이로', value: 'photon-aura-fire', codon: 'GGG' },{ category: '운동', name: '방사형 동적 호흡 수축률', value: 'motion-f-pulse', codon: 'CUU' }];} else if (presetKeyType === 'greenFloat') {systemActiveChainMemory = [{ category: '색상', name: '클로로필 바이오 그린', value: '#4dff4d', codon: 'GUG' },{ category: '골격', name: '구형 대칭 매트릭스', value: '50%', codon: 'AAA' },{ category: '효과', name: '체렌코프 블루 쉴드', value: 'photon-aura-glow', codon: 'UUU' },{ category: '운동', name: '정현파 조화 수직 진동', value: 'motion-f-float', codon: 'AUU' },{ category: '심핵', name: '루시페린 유전 중심핵', value: '1', codon: 'UAG' }];} else if (presetKeyType === 'aberration') {systemActiveChainMemory = [{ category: '색상', name: '공간 암흑 성간 바이올렛', value: '#3a0ca3', codon: 'UAG' },{ category: '골격', name: '비선형 아메바 유동 세포 토폴로지', value: '32% 68% 42% 58% / 55% 32% 68% 45%', codon: 'UGA' },{ category: '효과', name: '하이퍼 초신성 광자 방출 필드', value: 'photon-aura-cosmic', codon: 'UUA' },{ category: '운동', name: '강체 중심 등속 각속도', value: 'motion-f-spin', codon: 'GUU' }];}initializeHardwareSlotGridMatrix();executeBiologicalAvatarGraphicsPipeline('after');writeHardwareTerminalOutput(> 프리셋 고속 데이터 세트 주입 연산 매핑 스위칭 완결.);}/*** Commits current genetic setup array to the interactive local dictionary container framework*/function commitDataToEncyclopedia() {if (systemActiveChainMemory.length === 0) return;globalEncyclopediaCount++;document.getElementById("outMetricDiscovered").innerText = globalEncyclopediaCount;const listRenderContainer = document.getElementById("encyclopediaRenderContainer");if (globalEncyclopediaCount === 1) listRenderContainer.innerHTML = ""; // Clear Empty Status Textlet concatenatedSequenceString = systemActiveChainMemory.map(node => node.codon).join("-");const itemRowDivNode = document.createElement("div");itemRowDivNode.className = "archive-item-row";itemRowDivNode.innerHTML = <div class="archive-meta-text"> <span style="color: var(--text-bright); font-weight: 700;">🔬 가상 변이 실험종 레코드 #00${globalEncyclopediaCount}</span> <span style="font-family: monospace; color: var(--text-muted); font-size: 11px; margin-top:2px;">[${concatenatedSequenceString}]</span> </div> <button class="archive-load-trigger" onclick="restoreGeneticMemoryFromArchive('${escape(JSON.stringify(systemActiveChainMemory))}')">복원 로드</button>;listRenderContainer.appendChild(itemRowDivNode);writeHardwareTerminalOutput(> [📚 LOCAL RECORD SYSTEM]: 현재 조합 배열 데이터가 고유 도감 인덱스 아카이브 레코드로 백업 저장되었습니다.);}/*** Restores genetic sequence chain memory array from the localized archive data slots*/function restoreGeneticMemoryFromArchive(escapedSerializedJSONString) {systemActiveChainMemory = JSON.parse(unescape(escapedSerializedJSONString));initializeHardwareSlotGridMatrix();executeBiologicalAvatarGraphicsPipeline('after');writeHardwareTerminalOutput(> [📚 ARCHIVE RESTORE SYSTEM]: 저장소 조류 레코드로부터 소스 데이터를 역추적 연산하여 활성 결합 레지스터 파일에 적재 성공.);}/*** Master system total state reset routine function*/function clearMasterSystem() {systemActiveChainMemory = [];systemBaseSnapshotChainMemory = null;cumulativeMutationCounter = 0;document.getElementById("outMetricMutation").innerText = "0";initializeHardwareSlotGridMatrix();executeBiologicalAvatarGraphicsPipeline('before');executeBiologicalAvatarGraphicsPipeline('after');document.getElementById("hardwareTerminalDisplay").innerText = > SYSTEM ENGINE HARDWARE RESET ROUTINE SUCCESSFUL.\n> 새로운 선형 순열 결합 인자 체인 연산을 대기 중입니다.;}/*** Instruction Documentation Modal Layer Visibility Toggle Switch*/function toggleInstructionModal(visibilityTargetFlag) {document.getElementById("masterInstructionOverlay").style.display = visibilityTargetFlag ? "flex" : "none";}// Run Initial Frame Assembly Core System Bootup Trigger LoopinitializeHardwareSlotGridMatrix();
